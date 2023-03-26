@@ -1,30 +1,43 @@
-import './App.css';
-import React from 'react';
+import React from "react";
+import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import FrontPage from './component/FrontPage';
-import SettingPage from './component/SettingPage';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import FrontPage from "./component/FrontPage";
+import SettingPage from "./component/SettingPage";
+import Sesstings from "./component/Settings";
 
 class App extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      paired: false
-    }
+      paired: false,
+    };
   }
   willPaired = () => {
     this.setState({
-      paired: true
-    })
-  }
- 
+      paired: true,
+    });
+  };
+
   render() {
     return (
       <>
-      {this.state.paired ? (
-        <SettingPage />
-      ) : (
-        <FrontPage willPaired={this.willPaired} />
-      ) }
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              exact
+              element={
+                this.state.paired ? (
+                  <SettingPage />
+                ) : (
+                  <FrontPage willPaired={this.willPaired} />
+                )
+              }
+            ></Route>
+            <Route path="/settings" element={<Sesstings />}></Route>
+          </Routes>
+        </Router>
       </>
     );
   }

@@ -7,6 +7,14 @@
   text-align: center;
 }
 
+.settings-panel {
+  width: 95%;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  margin-top: 15px;
+}
+
 .device-panel {
   font-size: smaller;
 }
@@ -36,4 +44,33 @@
 .saver {
   text-align: center;
   height: 30px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+.sidebar.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar-content {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
