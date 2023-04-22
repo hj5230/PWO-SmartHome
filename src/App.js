@@ -13,12 +13,15 @@ class App extends React.Component {
       paired: false,
     };
   }
+
+  // wait for msg from child component
   willPaired = () => {
     this.setState({
       paired: true,
     });
   };
 
+  // two routes defined
   render() {
     return (
       <>

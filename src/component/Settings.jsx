@@ -25,12 +25,13 @@ export default class Sesstings extends React.Component {
   }
 
   componentDidMount = async () => {
-    this.setState({
+    this.setState({ // restore house diameters from localstorage
       length: localStorage.getItem("length"),
       width: localStorage.getItem("width"),
       height: localStorage.getItem("height"),
       wiA: localStorage.getItem("wiA"),
     });
+    // fetch and process current outdoor temp from api
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -48,6 +49,7 @@ export default class Sesstings extends React.Component {
     });
   };
 
+  // reset localstorage items when house diameters change
   handleChange = (e) => {
     const { name, value } = e.target;
     this.setState({
@@ -56,7 +58,9 @@ export default class Sesstings extends React.Component {
     localStorage.setItem(name, value);
   };
 
+  // calculate temp losses, also minimul power retain indoor temp
   heatLoss = (length, width, height, windowSize, outsideTemp, insideTemp) => {
+    // checks if all of the required parameters have been passed
     if (!(length && width && height && windowSize && outsideTemp && insideTemp))
       return "-";
     const U_wall = 0.4;
@@ -74,6 +78,7 @@ export default class Sesstings extends React.Component {
     return parseFloat(Q_total.toFixed(1));
   };
 
+  // calculate minimum power required to heat up within desinated time
   heatUp = (
     length,
     width,

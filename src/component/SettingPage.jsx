@@ -1,16 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import {
-  Figure,
-  Form,
-  Navbar,
-  Container,
-  Card,
-  Badge,
-} from "react-bootstrap";
+import { Figure, Form, Navbar, Container, Card, Badge } from "react-bootstrap";
 import on from "../on.png";
 import off from "../off.png";
-import { Chart } from "frappe-charts";
+import { Chart } from "frappe-charts"; // use of frappe chart
 
 export default class SettingPage extends React.Component {
   constructor(props) {
@@ -19,21 +12,22 @@ export default class SettingPage extends React.Component {
     this.state = {
       heating: false,
       saved: false,
-      outside: '', // outside temp fetched from api
-      expect: '', // current temp inside
-      length: '', // dimensions of the house
-      width: '',
-      height: '',
-      wiA: '', // window area
-      time: '', // time rquired to heat up
+      outside: "", // outside temp fetched from api
+      expect: "", // current temp inside
+      length: "", // dimensions of the house
+      width: "",
+      height: "",
+      wiA: "", // window area
+      time: "", // time rquired to heat up
       paraMissing: true, // is any house parameter missing
-      power: '',
-      desired: '',
+      power: "",
+      desired: "",
     };
   }
 
+  // form data for frappe chart
   generateChartData = () => {
-    const { outside, expect, length, width, height, wiA, desired, preserve } = this.state;
+    const { outside, expect, length, width, height, wiA, desired } = this.state;
     const data = {
       labels: [],
       datasets: [
@@ -43,7 +37,7 @@ export default class SettingPage extends React.Component {
         },
       ],
     };
-  
+
     for (let power = 0; power <= 3000; power += 50) {
       const time = this.timeSimulate(
         parseFloat(length),
@@ -59,10 +53,11 @@ export default class SettingPage extends React.Component {
       data.labels.push(power);
       data.datasets[0].values.push(energy);
     }
-  
+
     return data;
   };
 
+  // reload dataset when desired temp changes
   updateChartData = () => {
     const chartData = this.generateChartData();
     if (this.energyPowerChart) {
@@ -75,6 +70,7 @@ export default class SettingPage extends React.Component {
     this.setState(
       () => {
         return {
+          // restore from localstorage
           length: localStorage.getItem("length"),
           width: localStorage.getItem("width"),
           height: localStorage.getItem("height"),
@@ -90,6 +86,7 @@ export default class SettingPage extends React.Component {
           });
       }
     );
+    // fetch and process current temp from api
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -105,25 +102,25 @@ export default class SettingPage extends React.Component {
     this.setState({
       outside: temp,
     });
+    // set up chart when component mount
     const chartData = this.generateChartData();
-
-  this.energyPowerChart = new Chart(this.chartContainer.current, {
-    title: "Energy vs Power",
-    data: chartData,
-    type: "line",
-    height: 250,
-    colors: ["blue"],
-    axisOptions: {
-      xAxisMode: "tick",
-      xIsSeries: true,
-      xMin: this.state.preserve
-    },
-  });
+    this.energyPowerChart = new Chart(this.chartContainer.current, {
+      title: "Energy vs Power",
+      data: chartData,
+      type: "line",
+      height: 250,
+      colors: ["blue"],
+      axisOptions: {
+        xAxisMode: "tick",
+        xIsSeries: true,
+        xMin: this.state.preserve,
+      },
+    });
   };
 
+  // reload chart when state update
   componentDidUpdate(prevProps, prevState) {
     const { outside, expect, desired, length, width, height, wiA } = this.state;
-  
     if (
       prevState.outside !== outside ||
       prevState.expect !== expect ||
@@ -159,6 +156,7 @@ export default class SettingPage extends React.Component {
     }, 3000);
   };
 
+  // handling ranges power and desired temp
   handleRange = (e) => {
     this.setState({
       saved: true,
@@ -174,6 +172,7 @@ export default class SettingPage extends React.Component {
     });
   };
 
+  // calculate temp losses, also minimul power retain indoor temp
   heatLoss = (length, width, height, windowSize, outsideTemp, insideTemp) => {
     if (!(length && width && height && windowSize && outsideTemp && insideTemp))
       return "-";
@@ -192,6 +191,7 @@ export default class SettingPage extends React.Component {
     return parseFloat(Q_total.toFixed(1));
   };
 
+  // simulate time cost to heat up to desired temp with desinated power
   timeSimulate = (
     length,
     width,
@@ -258,6 +258,7 @@ export default class SettingPage extends React.Component {
       height,
       wiA,
     } = this.state;
+    // minmum power of reatin indoor temp, also least value of power range
     const preserve = this.heatLoss(
       parseFloat(length),
       parseFloat(width),
@@ -266,6 +267,7 @@ export default class SettingPage extends React.Component {
       parseFloat(outside),
       parseFloat(expect)
     );
+    // simulated time to heat up
     const time = this.timeSimulate(
       parseFloat(length),
       parseFloat(width),
@@ -276,6 +278,7 @@ export default class SettingPage extends React.Component {
       parseFloat(desired),
       parseFloat(power)
     );
+    // total energy consumption during heat process
     const energy = parseFloat(((power * time * 60) / 1000).toFixed(1));
     return (
       <>
@@ -337,7 +340,7 @@ export default class SettingPage extends React.Component {
                   onChange={this.handleSwitch}
                 />
               )}
-              <br/>
+              <br />
               {heating ? (
                 <>
                   <Form.Label>Desired Temperature&emsp;{desired}°C</Form.Label>
@@ -363,11 +366,11 @@ export default class SettingPage extends React.Component {
                   <small style={{ fontWeight: "bold" }}>
                     Heat up to {desired}°C within {time} mins.
                   </small>
-                  <br/><br/>
+                  <br />
+                  <br />
                   {!isNaN(energy) && (
                     <small style={{ fontWeight: "bold" }}>
-                      {energy}kWh will be consumed
-                      to heat up to {desired}°C.
+                      {energy}kWh will be consumed to heat up to {desired}°C.
                     </small>
                   )}
                 </>
@@ -381,7 +384,7 @@ export default class SettingPage extends React.Component {
                 </>
               )}
             </Card.Body>
-              <div ref={this.chartContainer} />
+            <div ref={this.chartContainer} />
           </Card>
         </div>
       </>

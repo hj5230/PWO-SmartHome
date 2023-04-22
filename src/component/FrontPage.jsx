@@ -16,10 +16,11 @@ export default class FrontPage extends React.Component {
     super(props);
     this.state = {
       showSidebar: false,
-      language: 'english',
+      // language: 'english',
     };
   }
 
+  // send confirm msg to parent component
   handlePair = () => {
     this.props.willPaired();
   };
@@ -28,6 +29,7 @@ export default class FrontPage extends React.Component {
     this.setState((prevState) => ({ showSidebar: !prevState.showSidebar }));
   };
 
+  // redirect to settings page
   handleClick = () => {
     window.location.href = '/settings';
   }
@@ -144,6 +146,7 @@ export default class FrontPage extends React.Component {
           <div className="sidebar-content" onClick={(e) => e.stopPropagation()}>
             <ListGroup>
               <ListGroup.Item>
+                {/* langauge option shows of scalability of app */}
                 <NavDropdown title='Language'>
                   <NavDropdown.Item>English</NavDropdown.Item>
                   <NavDropdown.Item>Suomi</NavDropdown.Item>
