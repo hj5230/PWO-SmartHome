@@ -13,18 +13,24 @@ export default class Sesstings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      outside: null,
-      expect: null,
-      length: null,
+      outside: null, // outside temp fetched from api
+      expect: null, // current temp inside
+      length: null, // dimensions of the house
       width: null,
       height: null,
-      wiA: null,
-      desired: null,
-      time: null,
+      wiA: null, // window area
+      desired: null, // desired temp
+      time: null, // time rquired to heat up
     };
   }
 
   componentDidMount = async () => {
+    this.setState({
+      length: localStorage.getItem("length"),
+      width: localStorage.getItem("width"),
+      height: localStorage.getItem("height"),
+      wiA: localStorage.getItem("wiA"),
+    });
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -47,6 +53,7 @@ export default class Sesstings extends React.Component {
     this.setState({
       [name]: value,
     });
+    localStorage.setItem(name, value);
   };
 
   heatLoss = (length, width, height, windowSize, outsideTemp, insideTemp) => {
@@ -113,7 +120,7 @@ export default class Sesstings extends React.Component {
   };
 
   render() {
-    const { outside, inside, length, width, height, wiA, desired, time } =
+    const { outside, expect, length, width, height, wiA, desired, time } =
       this.state;
     const watt = this.heatLoss(
       parseFloat(length),
@@ -121,7 +128,7 @@ export default class Sesstings extends React.Component {
       parseFloat(height),
       parseFloat(wiA),
       parseFloat(outside),
-      parseFloat(inside)
+      parseFloat(expect)
     );
     const power = this.heatUp(
       parseFloat(length),
@@ -129,7 +136,7 @@ export default class Sesstings extends React.Component {
       parseFloat(height),
       parseFloat(wiA),
       parseFloat(outside),
-      parseFloat(inside),
+      parseFloat(expect),
       parseFloat(desired),
       parseFloat(time)
     );
@@ -144,27 +151,14 @@ export default class Sesstings extends React.Component {
         <div className="settings-panel">
           <Card>
             <Card.Body>
-              <small style={{ fontWeight: "bold" }}>
-                It's {outside}°C outside.
-              </small>
-              <br />
-              <Form.Control
-                name="inside"
-                placeholder="Current temperature(°C) inside"
-                onChange={this.handleChange}
-                autoComplete="off"
-              />
-              <br />
-              <small style={{ fontWeight: "bold" }}>
-                Basic info of the house:
-              </small>
-              <br />
+              <h5>Basic info</h5>
               <Badge bg="secondary" pill>
                 Length
               </Badge>
               <Form.Control
                 name="length"
                 placeholder="m"
+                value={length}
                 onChange={this.handleChange}
                 autoComplete="off"
               />
@@ -174,6 +168,7 @@ export default class Sesstings extends React.Component {
               <Form.Control
                 name="width"
                 placeholder="m"
+                value={width}
                 onChange={this.handleChange}
                 autoComplete="off"
               />
@@ -183,6 +178,7 @@ export default class Sesstings extends React.Component {
               <Form.Control
                 name="height"
                 placeholder="m"
+                value={height}
                 onChange={this.handleChange}
                 autoComplete="off"
               />
@@ -192,6 +188,19 @@ export default class Sesstings extends React.Component {
               <Form.Control
                 name="wiA"
                 placeholder="m²"
+                value={wiA}
+                onChange={this.handleChange}
+                autoComplete="off"
+              />
+              <br />
+              <h5>Heat Simulator</h5>
+              <small style={{ fontWeight: "bold" }}>
+                It's {outside}°C outside.
+              </small>
+              <br />
+              <Form.Control
+                name="expect"
+                placeholder="Current temperature(°C) inside"
                 onChange={this.handleChange}
                 autoComplete="off"
               />
