@@ -279,7 +279,7 @@ export default class SettingPage extends React.Component {
       parseFloat(power)
     );
     // total energy consumption during heat process
-    const energy = parseFloat(((power * time * 60) / 1000).toFixed(1));
+    const energy = parseFloat(((power * time * 60) / 1000000).toFixed(1));
     return (
       <>
         <Navbar bg="light" expand="lg">

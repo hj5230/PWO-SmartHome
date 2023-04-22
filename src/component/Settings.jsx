@@ -120,7 +120,7 @@ export default class Sesstings extends React.Component {
     const energyRequired = mass * specificHeatCapacityJ * deltaT; // in Joules
     const timeInSeconds = timeInMinutes * 60;
     const powerRequired = energyRequired / timeInSeconds; // in Watts
-    const totalPowerRequired = powerRequired + maintainingPower;
+    const totalPowerRequired = (powerRequired + maintainingPower) / 1000;
     return parseFloat(totalPowerRequired.toFixed(1));
   };
 
