@@ -120,7 +120,7 @@ export default class Sesstings extends React.Component {
     const energyRequired = mass * specificHeatCapacityJ * deltaT; // in Joules
     const timeInSeconds = timeInMinutes * 60;
     const powerRequired = energyRequired / timeInSeconds; // in Watts
-    const totalPowerRequired = (powerRequired + maintainingPower) / 1000;
+    const totalPowerRequired = powerRequired + maintainingPower;
     return parseFloat(totalPowerRequired.toFixed(1));
   };
 
@@ -229,7 +229,7 @@ export default class Sesstings extends React.Component {
                 />
               </InputGroup>
               <small style={{ fontWeight: "bold" }}>
-                {power} watts are required to heat the room to {desired}°C in{" "}
+                {(power / 1000).toFixed(1)} watts are required to heat the room to {desired}°C in{" "}
                 {time} minutes.
               </small>
               <br />
